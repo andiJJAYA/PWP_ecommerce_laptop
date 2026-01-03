@@ -61,7 +61,7 @@ body {
     section {
         min-height: 100vh;
         width: 100vw;
-        padding-top: 70px; /* kompensasi navbar */
+        padding-top: 70px;
         scroll-margin-top: 70px;
     }
 
@@ -105,8 +105,6 @@ body {
     height: 420px;
 }
 
-
-/* Lingkaran gradasi kiri → kanan */
 .circle-bg {
     position: absolute;
     width: 280px;
@@ -129,7 +127,6 @@ body {
     filter: drop-shadow(0 20px 30px rgba(0,0,0,0.3));
 }
 
-/* Laptop Atas (Kanan Atas) */
 .laptop-top {
     width: 380px;
     bottom: 100px;
@@ -141,7 +138,6 @@ body {
     -o-transform: rotate(-20deg);
 }
 
-/* Laptop Kiri (Tengah Kiri) */
 .laptop-left {
     width: 410px;
     top: -30px;
@@ -153,7 +149,6 @@ body {
     -o-transform: rotate(-15deg);
 }
 
-/* Laptop Bawah (Kanan Bawah - Posisi Terlipat/Tablet mode) */
 .laptop-right {
     width: 350px;
     bottom: -40px;
@@ -170,7 +165,6 @@ body {
     background: linear-gradient(-160deg,#0f2027,#203a43,#2c5364);
 }
 
-/* HEADER */
 .product-header {
     padding-left: 80px;
     margin-bottom: 20px;
@@ -186,14 +180,12 @@ body {
     color: rgb(255, 255, 255);
 }
 
-/* ROW */
 .product-row {
     display: flex;
     justify-content: center;
     gap: 25px;
 }
 
-/* CARD */
 .product-card {
     width: 260px;
     background: #fefcfcde;
@@ -445,31 +437,28 @@ form button {
 }
 
 .buy-btn {
-    width: 100%;         /* Membuat tombol selebar container-nya */
-    display: block;      /* Memastikan tombol berperilaku sebagai block element */
-    padding: 10px 0;    /* Memberi ruang atas dan bawah agar terlihat bagus */
-    box-sizing: border-box; /* Memastikan padding tidak menambah lebar total */
+    width: 100%;        
+    display: block;      
+    padding: 10px 0;   
+    box-sizing: border-box; 
 }
 
 /* ABOUT SECTION CUSTOM */
 #about {
     background: linear-gradient(160deg, #2c5364, #203a43, #0f2027);
     color: white;
-    /* Memastikan konten tidak meluap dari 100vh */
     overflow: hidden; 
 }
 
-/* 1. Perbaikan Gambar agar tidak terlalu panjang */
 .img-about {
     width: 100%;
-    max-height: 350px; /* Membatasi tinggi gambar */
-    object-fit: cover; /* Menjaga proporsi gambar */
+    max-height: 350px; 
+    object-fit: cover; 
     border-radius: 20px;
     box-shadow: 0 15px 35px rgba(0,0,0,0.3);
 }
 
 .brand-name {
-    /* Gradasi Biru Cyan ke Biru Ungu sesuai foto */
     background: linear-gradient(to right, #40e0d0, #2d52e6, #7b61ff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -756,7 +745,6 @@ form button {
     letter-spacing: 1px;
 }
 
-/*akun*/
 /* ACCOUNT PAGE STYLES */
 .account-card {
     background: rgba(255, 255, 255, 0.05);

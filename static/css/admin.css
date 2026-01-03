@@ -108,22 +108,19 @@ admin_dashbord {
     background: rgb(220, 53, 70);
 }
 
-/* Container utama agar mengikuti tinggi layar/sidebar */
 .order-wrapper {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Header Tabel Tetap di Atas saat Scroll */
 .order-table thead th {
     position: sticky;
     top: 0;
-    background: #16242a; /* Sesuaikan dengan warna background card Anda */
+    background: #16242a;
     z-index: 2;
     box-shadow: inset 0 -1px 0 rgba(255,255,255,0.1);
 }
 
-/* Custom Scrollbar agar lebih estetik (Modern Look) */
 .table-responsive::-webkit-scrollbar {
     width: 6px;
 }
@@ -141,37 +138,32 @@ admin_dashbord {
     background: rgba(0, 209, 255, 0.5);
 }
 
-/* Pastikan header tabel di dalam card-body tetap menempel saat di-scroll */
 .card-body .table-responsive thead th {
     position: sticky;
     top: 0;
-    background: #212529; /* Warna sesuai tema table-dark bootstrap */
+    background: #212529; 
     z-index: 2;
     border-bottom: 2px solid #373b3e;
 }
 
-/* Opsional: memperhalus tampilan teks pesan yang panjang */
 .table td small {
-    display: -webkit-box; /* Maksimal 2 baris */
+    display: -webkit-box; 
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
 
-/* Aturan umum untuk semua tabel di dashboard agar header tetap di atas saat scroll */
 .table-responsive thead th {
     position: sticky;
     top: 0;
     z-index: 10;
-    background-color: #1a1a1a !important; /* Warna gelap solid agar teks di bawahnya tidak tembus */
+    background-color: #1a1a1a !important; 
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Mempercantik tampilan baris saat di-hover */
 .table-hover tbody tr:hover {
     background-color: rgba(0, 209, 255, 0.05) !important;
 }
 
-/* Penyesuaian scrollbar untuk Chrome/Edge/Safari */
 .table-responsive::-webkit-scrollbar {
     width: 6px;
 }
