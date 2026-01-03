@@ -1,0 +1,184 @@
+body {
+    overflow-x: hidden;
+}
+navbar {
+    background: #0b151a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    height: 75px;
+    z-index: 1030;
+}
+
+admin_dashbord {
+    background: #0f2027;
+    min-height: 100vh;
+    color: white;
+    padding-top: 75px;
+    overflow-x: hidden;
+}
+
+.nav-pills .nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    transition: 0.3s;
+    border-radius: 12px;
+}
+.nav-pills .nav-link:hover {
+    background: rgba(64, 224, 208, 0.1);
+    color: #40e0d0;
+}
+.nav-pills .nav-link.active {
+    background: #40e0d0 !important;
+    color: #0b151a !important;
+    font-weight: bold;
+    box-shadow: 0 4px 15px rgba(64, 224, 208, 0.3);
+}
+.stat-card {
+    transition: transform 0.3s ease;
+}
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+.alert {
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+  /* ===== STATUS BADGE ===== */
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.status-confirmed {
+    background: rgba(10, 222, 59, 0.15);
+    color: #28a745;
+    border: 1px solid rgba(40, 167, 69, 0.4);
+}
+
+.status-pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.4);
+}
+
+.status-canceled {
+    background: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+    border: 1px solid rgba(220, 53, 69, 0.4);
+}
+
+  /* ===== ACTION BUTTON ===== */
+.order-action {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.btn-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    transition: 0.2s ease;
+}
+
+.btn-confirm {
+    color: #ffffffeb;
+    background-color: rgba(40, 167, 69, 0.5);
+}
+
+.btn-confirm:hover {
+    background: rgb(40, 167, 70);
+}
+
+.btn-cancel {
+    color: #ffffffeb;
+    background-color: rgba(220, 53, 69, 0.5);
+}
+
+.btn-cancel:hover {
+    background: rgb(220, 53, 70);
+}
+
+/* Container utama agar mengikuti tinggi layar/sidebar */
+.order-wrapper {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Header Tabel Tetap di Atas saat Scroll */
+.order-table thead th {
+    position: sticky;
+    top: 0;
+    background: #16242a; /* Sesuaikan dengan warna background card Anda */
+    z-index: 2;
+    box-shadow: inset 0 -1px 0 rgba(255,255,255,0.1);
+}
+
+/* Custom Scrollbar agar lebih estetik (Modern Look) */
+.table-responsive::-webkit-scrollbar {
+    width: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(0, 209, 255, 0.3);
+    border-radius: 10px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 209, 255, 0.5);
+}
+
+/* Pastikan header tabel di dalam card-body tetap menempel saat di-scroll */
+.card-body .table-responsive thead th {
+    position: sticky;
+    top: 0;
+    background: #212529; /* Warna sesuai tema table-dark bootstrap */
+    z-index: 2;
+    border-bottom: 2px solid #373b3e;
+}
+
+/* Opsional: memperhalus tampilan teks pesan yang panjang */
+.table td small {
+    display: -webkit-box; /* Maksimal 2 baris */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Aturan umum untuk semua tabel di dashboard agar header tetap di atas saat scroll */
+.table-responsive thead th {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: #1a1a1a !important; /* Warna gelap solid agar teks di bawahnya tidak tembus */
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Mempercantik tampilan baris saat di-hover */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 209, 255, 0.05) !important;
+}
+
+/* Penyesuaian scrollbar untuk Chrome/Edge/Safari */
+.table-responsive::-webkit-scrollbar {
+    width: 6px;
+}
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(0, 209, 255, 0.2);
+    border-radius: 10px;
+}
+.table-responsive::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 209, 255, 0.5);
+}

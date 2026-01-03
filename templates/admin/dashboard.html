@@ -1,0 +1,828 @@
+{% extends "layout.html" %} {% block navbar %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}"/>
+
+<nav class="navbar navbar-dark px-5 fixed-top">
+  <div
+    class="container-fluid d-flex justify-content-between align-items-center">
+    <a class="navbar-brand m-0" href="/">
+      <img src="{{ url_for('static', filename='img/brand_logo.png') }}" class="logo-web" style="height: 40px"/>
+    </a>
+    <a href="{{ url_for('auth.logout') }}" class="text-danger fs-4 px-2" title="Keluar">
+      <i class="bi bi-box-arrow-left"></i>
+    </a>
+  </div>
+</nav>
+{% endblock %} {% block content %}
+<section class="admin_dashbord" id="admin-dashboard">
+  <div class="container-fluid px-4 pt-4">
+    <div class="row g-4">
+      <div class="col-lg-3 col-xl-2 mb-4">
+        <div
+          class="account-card p-4 rounded-4 shadow-lg text-center"
+          style="
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 100px;
+          "
+        >
+          <div
+            class="admin-profile-circle mx-auto mb-3 d-flex align-items-center justify-content-center shadow"
+            style="
+              width: 90px;
+              height: 90px;
+              background: linear-gradient(45deg, #40e0d0, #7b61ff);
+              border-radius: 50%;
+              border: 3px solid rgba(255, 255, 255, 0.1);
+            "
+          >
+            <span
+              class="fw-bold text-dark"
+              style="font-size: 1rem; letter-spacing: 1px"
+              >ADMIN</span
+            >
+          </div>
+          <h6 class="fw-bold mb-3 text-info">Nexus Manager</h6>
+
+          <hr class="opacity-10 mb-4" />
+
+          <div
+            class="nav flex-column nav-pills text-start"
+            id="v-pills-tab"
+            role="tablist"
+          >
+            <button
+              class="nav-link active mb-2 py-3 border-0 w-100"
+              data-bs-toggle="pill"
+              data-bs-target="#stat-overview"
+            >
+              <i class="fa fa-chart-line me-2"></i> Ringkasan
+            </button>
+            <button
+              class="nav-link mb-2 py-3 border-0 w-100"
+              data-bs-toggle="pill"
+              data-bs-target="#manage-products"
+            >
+              <i class="fa fa-laptop me-2"></i> Produk
+            </button>
+            <button
+              class="nav-link mb-2 py-3 border-0 w-100"
+              data-bs-toggle="pill"
+              data-bs-target="#manage-orders"
+            >
+              <i class="fa fa-shopping-cart me-2"></i> Pesanan
+            </button>
+            <button
+              class="nav-link mb-2 py-3 border-0 w-100"
+              data-bs-toggle="pill"
+              data-bs-target="#manage-consultations"
+            >
+              <i class="fa fa-comments me-2"></i> Konsultasi
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-9 col-xl-10">
+        {% with messages = get_flashed_messages(with_categories=true) %} {% if
+        messages %} {% for category, message in messages %}
+        <div
+          class="alert alert-{{ category }} alert-dismissible fade show"
+          role="alert"
+        >
+          {{ message }}
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+        {% endfor %} {% endif %} {% endwith %}
+
+        <div class="tab-content" id="v-pills-tabContent">
+          <div
+            class="tab-pane fade show active"
+            id="stat-overview"
+            role="tabpanel"
+          >
+            <div class="row g-4">
+              <div class="col-md-6">
+                <div
+                  class="stat-card p-4 rounded-4 border border-primary h-100 position-relative overflow-hidden"
+                  style="background: rgba(13, 110, 253, 0.1)"
+                >
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <p class="small opacity-75 mb-1 text-uppercase fw-bold">
+                        Total Produk
+                      </p>
+                      <h2 class="fw-bold m-0">
+                        {{ total_produk }}
+                        <span class="fs-6 text-info fw-normal">Unit</span>
+                      </h2>
+                    </div>
+                    <i class="fa fa-laptop fs-1 opacity-25"></i>
+                  </div>
+                  <canvas
+                    id="chartProduk"
+                    style="max-height: 80px; margin-top: 20px"
+                  ></canvas>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div
+                  class="stat-card p-4 rounded-4 border border-success h-100 position-relative overflow-hidden"
+                  style="background: rgba(25, 135, 84, 0.1)"
+                >
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <p class="small opacity-75 mb-1 text-uppercase fw-bold">
+                        Pesanan Masuk
+                      </p>
+                      <h2 class="fw-bold m-0 text-success">
+                        {{ total_pesanan }}
+                        <span class="fs-6 text-white-50 fw-normal">Baru</span>
+                      </h2>
+                    </div>
+                    <i class="fa fa-shopping-cart fs-1 opacity-25"></i>
+                  </div>
+                  <canvas
+                    id="chartPesanan"
+                    style="max-height: 80px; margin-top: 20px"
+                  ></canvas>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div
+                  class="stat-card p-4 rounded-4 border border-warning h-100 position-relative overflow-hidden"
+                  style="background: rgba(255, 193, 7, 0.1)"
+                >
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <p class="small opacity-75 mb-1 text-uppercase fw-bold">
+                        Konsultasi
+                      </p>
+                      <h2 class="fw-bold m-0 text-warning">
+                        {{ total_konsultasi }}
+                        <span class="fs-6 text-white-50 fw-normal">Pesan</span>
+                      </h2>
+                    </div>
+                    <i class="fa fa-comments fs-1 opacity-25"></i>
+                  </div>
+                  <canvas
+                    id="chartKonsul"
+                    style="max-height: 80px; margin-top: 20px"
+                  ></canvas>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <div
+                  class="stat-card p-4 rounded-4 border border-info h-100 position-relative overflow-hidden"
+                  style="background: rgba(13, 202, 240, 0.1)"
+                >
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <p class="small opacity-75 mb-1 text-uppercase fw-bold">
+                        User Terdaftar
+                      </p>
+                      <h2 class="fw-bold m-0 text-info">
+                        {{ total_user }}
+                        <span class="fs-6 text-white-50 fw-normal">Orang</span>
+                      </h2>
+                    </div>
+                    <i class="fa fa-users fs-1 opacity-25"></i>
+                  </div>
+                  <canvas
+                    id="chartUser"
+                    style="max-height: 80px; margin-top: 20px"
+                  ></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- produk -->
+          <div class="tab-pane fade" id="manage-products" role="tabpanel">
+            <div
+              class="account-card p-4 rounded-4 shadow-lg"
+              style="
+                background: rgba(255, 255, 255, 0.03);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                height: calc(100vh - 150px);
+                display: flex;
+                flex-direction: column;
+              "
+            >
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <h5 class="fw-bold m-0 text-info">Kelola Katalog Produk</h5>
+                <button
+                  class="btn btn-info btn-sm px-3"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modalAddProduct"
+                >
+                  <i class="fa fa-plus me-1"></i> Tambah Produk
+                </button>
+              </div>
+
+              <div
+                class="table-responsive flex-grow-1"
+                style="overflow-y: auto"
+              >
+                <table class="table table-dark table-hover align-middle">
+                  <thead
+                    style="
+                      position: sticky;
+                      top: 0;
+                      z-index: 10;
+                      background: #1a1a1a;
+                    "
+                  >
+                    <tr class="text-white-50">
+                      <th>Gambar</th>
+                      <th>Nama Produk</th>
+                      <th>Spek Singkat</th>
+                      <th>Harga</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for p in all_products %}
+                    <tr>
+                      <td>
+                        {% if p.gambar %}
+                        <img
+                          src="{{ url_for('static', filename='img/products/' + p.gambar) }}"
+                          class="rounded"
+                          style="width: 50px; height: 50px; object-fit: cover"
+                        />
+                        {% else %}
+                        <div
+                          class="rounded d-flex align-items-center justify-content-center"
+                          style="width: 50px; height: 50px; background: #333"
+                        >
+                          <i class="fa fa-image opacity-25"></i>
+                        </div>
+                        {% endif %}
+                      </td>
+                      <td class="fw-semibold">{{ p.nama_laptop }}</td>
+                      <td>
+                        <div style="max-width: 300px">
+                          <small class="text-white-50 d-block text-truncate"
+                            >{{ p.spesifikasi_singkat }}</small
+                          >
+                        </div>
+                      </td>
+                      <td class="text-nowrap">
+                        Rp {{ "{:,.0f}".format(p.harga).replace(',', '.') }}
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center gap-2">
+                          <button
+                            class="btn btn-warning btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#modalEditProduct{{ p.id }}"
+                          >
+                            <i class="fa fa-edit"></i>
+                          </button>
+                          <a
+                            href="{{ url_for('admin.delete_product', id=p.id) }}"
+                            class="btn btn-danger btn-sm"
+                            onclick="return confirm('Hapus produk {{ p.nama_laptop }}?')"
+                          >
+                            <i class="fa fa-trash"></i>
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- PESANAN -->
+          <div class="tab-pane fade" id="manage-orders" role="tabpanel">
+            <div
+              class="account-card p-4 rounded-4 shadow-lg order-wrapper"
+              style="
+                height: calc(100vh - 150px);
+                display: flex;
+                flex-direction: column;
+              "
+            >
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <h5 class="fw-bold m-0 text-info">Kelola Pesanan</h5>
+              </div>
+
+              <div
+                class="table-responsive flex-grow-1"
+                style="overflow-y: auto"
+              >
+                <table
+                  class="table table-dark table-hover align-middle order-table"
+                >
+                  <thead
+                    style="
+                      position: sticky;
+                      top: 0;
+                      z-index: 10;
+                      background: #1a1a1a;
+                    "
+                  >
+                    <tr class="text-white-50">
+                      <th>ID</th>
+                      <th>Pelanggan</th>
+                      <th>Produk</th>
+                      <th>Harga</th>
+                      <th>Status</th>
+                      <th class="text-center">Aksi</th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    {% for order in all_orders %}
+                    <tr>
+                      <td class="text-secondary fw-semibold">
+                        #{{ order.id }}
+                      </td>
+
+                      <td>
+                        <div class="fw-semibold">{{ order.nama_penerima }}</div>
+                        <small class="text-white-50">{{ order.no_hp }}</small>
+                      </td>
+
+                      <td>
+                        <div class="text-info fw-semibold">
+                          {{ order.produk.nama_laptop }}
+                        </div>
+                        <small
+                          class="text-white-50 text-truncate d-block"
+                          style="max-width: 180px"
+                        >
+                          {{ order.alamat_lengkap }}
+                        </small>
+                      </td>
+
+                      <td>
+                        <div class="fw-bold">
+                          Rp {{
+                          "{:,.0f}".format(order.harga_saat_beli).replace(',',
+                          '.') }}
+                        </div>
+                        <small class="text-white-50"
+                          >{{ order.bank_pilihan }}</small
+                        >
+                      </td>
+
+                      <td>
+                        {% if order.status == 'pending' %}
+                        <span class="status-badge status-pending">Pending</span>
+                        {% elif order.status == 'confirmed' %}
+                        <span class="status-badge status-confirmed"
+                          >Confirmed</span
+                        >
+                        {% else %}
+                        <span class="status-badge status-canceled"
+                          >Canceled</span
+                        >
+                        {% endif %}
+                      </td>
+
+                      <td class="text-center">
+                        {% if order.status == 'pending' %}
+                        <div class="order-action">
+                          <a
+                            href="{{ url_for('admin.update_order_status', id=order.id, action='confirm') }}"
+                            class="btn-action btn-confirm"
+                          >
+                            <i class="bi bi-check-lg"></i>
+                          </a>
+                          <a
+                            href="{{ url_for('admin.update_order_status', id=order.id, action='cancel') }}"
+                            class="btn-action btn-cancel"
+                          >
+                            <i class="bi bi-x-lg"></i>
+                          </a>
+                        </div>
+                        {% else %}
+                        <span class="text-secondary">Selesai</span>
+                        {% endif %}
+                      </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                      <td colspan="6" class="text-center py-5 text-white-50">
+                        <i class="bi bi-cart-x fs-1 d-block mb-2"></i>
+                        Belum ada pesanan masuk
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- KONSULTASI -->
+          <div class="tab-pane fade" id="manage-consultations">
+            <div
+              class="card bg-dark text-white border-secondary rounded-4"
+              style="
+                height: calc(100vh - 150px);
+                display: flex;
+                flex-direction: column;
+              "
+            >
+              <div class="card-body p-4 d-flex flex-column h-100">
+                <h4 class="mb-4">
+                  <i class="bi bi-chat-dots me-2"></i>Daftar Konsultasi
+                </h4>
+
+                <div
+                  class="table-responsive flex-grow-1"
+                  style="overflow-y: auto"
+                >
+                  <table class="table table-dark table-hover align-middle">
+                    <thead
+                      style="
+                        position: sticky;
+                        top: 0;
+                        z-index: 10;
+                        background: #1a1a1a;
+                      "
+                    >
+                      <tr>
+                        <th>ID</th>
+                        <th>User</th>
+                        <th>Kebutuhan</th>
+                        <th>Pesan</th>
+                        <th>Status</th>
+                        <th>Aksi</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for c in all_consuls %}
+                      <tr>
+                        <td>#{{ c.id }}</td>
+                        <td>{{ c.nama_wa }}</td>
+                        <td><small>{{ c.kategori_kebutuhan }}</small></td>
+                        <td style="max-width: 250px">
+                          <small class="text-white-50"
+                            >{{ c.pesan_user }}</small
+                          >
+                        </td>
+                        <td>
+                          <span
+                            class="status-badge {{ 'status-confirmed' if c.status == 'replied' else 'status-pending' }}"
+                          >
+                            {{ c.status }}
+                          </span>
+                        </td>
+                        <td>
+                          <div class="d-flex gap-2">
+                            <button
+                              class="btn btn-sm btn-info"
+                              data-bs-toggle="modal"
+                              data-bs-target="#replyModal{{ c.id }}"
+                            >
+                              <i class="bi bi-reply text-white"></i>
+                            </button>
+                            <a
+                              href="{{ url_for('admin.delete_consultation', id=c.id) }}"
+                              class="btn btn-sm btn-danger"
+                              onclick="return confirm('Hapus?')"
+                            >
+                              <i class="bi bi-trash"></i>
+                            </a>
+                          </div>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% for c in all_consuls %}
+          <div
+            class="modal fade"
+            id="replyModal{{ c.id }}"
+            tabindex="-1"
+            aria-hidden="true"
+            style="z-index: 9999"
+          >
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content bg-dark border-secondary shadow-lg">
+                <div class="modal-header border-secondary">
+                  <h5 class="modal-title">Balas Konsultasi #{{ c.id }}</h5>
+                  <button
+                    type="button"
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal"
+                  ></button>
+                </div>
+                <form
+                  action="{{ url_for('admin.reply_consultation', id=c.id) }}"
+                  method="POST"
+                >
+                  <div class="modal-body">
+                    <p class="mb-2 text-info small text-uppercase fw-bold">
+                      Pesan dari {{ c.nama_wa }}:
+                    </p>
+                    <div
+                      class="bg-secondary p-3 rounded-3 mb-3"
+                      style="
+                        --bs-bg-opacity: 0.1;
+                        border: 1px solid rgba(255, 255, 255, 0.1);
+                      "
+                    >
+                      <i class="bi bi-quote opacity-50"></i> {{ c.pesan_user }}
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label small fw-bold"
+                        >Balasan Admin</label
+                      >
+                      <textarea
+                        name="balasan_admin"
+                        class="form-control bg-dark text-white border-secondary"
+                        rows="4"
+                        required
+                        placeholder="Ketik pesan balasan di sini..."
+                      >
+                        {{ c.balasan_admin or '' }}</textarea
+                      >
+                    </div>
+                  </div>
+                  <div class="modal-footer border-secondary">
+                    <button
+                      type="button"
+                      class="btn btn-sm btn-outline-secondary"
+                      data-bs-dismiss="modal"
+                    >
+                      Batal
+                    </button>
+                    <button type="submit" class="btn btn-sm btn-primary px-4">
+                      Kirim Balasan
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div
+  class="modal fade"
+  id="modalAddProduct"
+  tabindex="-1"
+  aria-hidden="true"
+  style="z-index: 1060"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div
+      class="modal-content bg-dark text-white border-0 shadow-lg"
+      style="border-radius: 20px; background: #16213e !important"
+    >
+      <div
+        class="modal-header border-bottom border-white border-opacity-10 py-3"
+      >
+        <h5 class="modal-title fw-bold text-info">
+          <i class="fa fa-plus-circle me-2"></i>Tambah Produk Baru
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form
+        action="{{ url_for('admin.add_product') }}"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="modal-body p-4">
+          <div class="row g-3">
+            <div class="col-md-7">
+              <label class="form-label small fw-bold text-white-50"
+                >Nama Laptop</label
+              >
+              <input
+                type="text"
+                name="nama_laptop"
+                class="form-control bg-dark border-secondary text-white py-2"
+                placeholder="Contoh: ASUS ROG Zephyrus"
+                required
+              />
+            </div>
+            <div class="col-md-5">
+              <label class="form-label small fw-bold text-white-50"
+                >Harga (Rp)</label
+              >
+              <input
+                type="number"
+                name="harga"
+                class="form-control bg-dark border-secondary text-white py-2"
+                placeholder="Hanya angka"
+                required
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-white-50"
+                >Spesifikasi Singkat</label
+              >
+              <input
+                type="text"
+                name="spesifikasi_singkat"
+                class="form-control bg-dark border-secondary text-white py-2"
+                placeholder="Contoh: RTX 4060, Ryzen 9, 16GB RAM"
+                required
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label small fw-bold text-white-50"
+                >Gambar Produk</label
+              >
+              <div class="input-group">
+                <span class="input-group-text bg-secondary border-0 text-white"
+                  ><i class="fa fa-image"></i
+                ></span>
+                <input
+                  type="file"
+                  name="gambar"
+                  class="form-control bg-dark border-secondary text-white"
+                />
+              </div>
+              <small
+                class="text-white-50 mt-1 d-block"
+                style="font-size: 0.75rem"
+                >Format: JPG, PNG, atau WebP. Maks 2MB.</small
+              >
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="modal-footer border-top border-white border-opacity-10 py-3"
+        >
+          <button
+            type="button"
+            class="btn btn-sm btn-link text-white-50 text-decoration-none"
+            data-bs-dismiss="modal"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="btn btn-sm btn-info px-4 fw-bold shadow-sm"
+            style="border-radius: 8px"
+          >
+            Simpan Produk
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% for p in all_products %}
+<div
+  class="modal fade"
+  id="modalEditProduct{{ p.id }}"
+  tabindex="-1"
+  aria-hidden="true"
+  style="z-index: 1070"
+>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div
+      class="modal-content bg-dark text-white border-0 shadow-lg"
+      style="border-radius: 20px; background: #16213e !important"
+    >
+      <div
+        class="modal-header border-bottom border-white border-opacity-10 py-3"
+      >
+        <h5 class="modal-title fw-bold text-warning">
+          <i class="fa fa-edit me-2"></i>Edit Produk
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+
+      <form
+        action="{{ url_for('admin.edit_product', id=p.id) }}"
+        method="POST"
+        enctype="multipart/form-data"
+      >
+        <div class="modal-body p-4">
+          <div class="row g-3">
+            <div class="col-md-7">
+              <label class="form-label small fw-bold text-white-50"
+                >Nama Laptop</label
+              >
+              <input
+                type="text"
+                name="nama_laptop"
+                class="form-control bg-dark border-secondary text-white py-2"
+                value="{{ p.nama_laptop }}"
+                required
+              />
+            </div>
+            <div class="col-md-5">
+              <label class="form-label small fw-bold text-white-50"
+                >Harga (Rp)</label
+              >
+              <input
+                type="number"
+                name="harga"
+                class="form-control bg-dark border-secondary text-white py-2"
+                value="{{ p.harga|int }}"
+                required
+              />
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-bold text-white-50"
+                >Spesifikasi Singkat</label
+              >
+              <input
+                type="text"
+                name="spesifikasi_singkat"
+                class="form-control bg-dark border-secondary text-white py-2"
+                value="{{ p.spesifikasi_singkat }}"
+                required
+              />
+            </div>
+            <div class="col-12">
+              <label class="form-label small fw-bold text-white-50 d-block"
+                >Gambar Produk</label
+              >
+              <div
+                class="d-flex align-items-center gap-3 bg-dark p-2 rounded border border-secondary"
+              >
+                {% if p.gambar %}
+                <img
+                  src="{{ url_for('static', filename='img/products/' + p.gambar) }}"
+                  class="rounded"
+                  style="width: 60px; height: 60px; object-fit: cover"
+                />
+                {% endif %}
+                <div class="flex-grow-1">
+                  <input
+                    type="file"
+                    name="gambar"
+                    class="form-control form-control-sm bg-secondary border-0 text-white"
+                  />
+                  <small
+                    class="text-info mt-1 d-block"
+                    style="font-size: 0.7rem"
+                    >Kosongkan jika tidak ingin ganti gambar.</small
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="modal-footer border-top border-white border-opacity-10 py-3"
+        >
+          <button
+            type="button"
+            class="btn btn-sm btn-link text-white-50 text-decoration-none"
+            data-bs-dismiss="modal"
+          >
+            Batal
+          </button>
+          <button
+            type="submit"
+            class="btn btn-sm btn-warning px-4 fw-bold shadow-sm"
+            style="border-radius: 8px"
+          >
+            Update Produk
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+{% endblock %}

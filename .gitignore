@@ -1,0 +1,11 @@
+# Python bytecode
+__pycache__/
+*.pyc
+
+# Virtual Environment
+env/
+venv/
+ENV/
+
+# Environment Variables (Data Sensitif)
+.env

@@ -1,0 +1,430 @@
+{% extends "layout.html" %}
+
+{% block navbar %}
+<nav class="navbar navbar-dark px-5" style="background:#0f2027">
+    <a class="navbar-brand" href="/">
+        <img src="{{ url_for('static', filename='img/brand_logo.png') }}" class="logo-web">
+    </a>
+
+    <a href="/" class="btn btn-primary">
+        Kembali ke Home
+    </a>
+</nav>
+{% endblock %}
+
+{% block content %}
+<section id="user-account"
+         class="py-5"
+         style="background:#0f2027; min-height:100vh; color:white;">
+
+    <div class="container mt-5">
+        <div class="row">
+
+            <!-- SIDEBAR -->
+            <div class="col-lg-4 mb-4">
+                <div class="account-card p-4 rounded-4 shadow-lg text-center"
+                     style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1);">
+
+                    <div class="profile-img-wrapper mb-3">
+                        <img src="https://ui-avatars.com/api/?name={{ current_user.nama }}&background=40e0d0&color=fff&size=128"
+                             class="rounded-circle shadow border border-3 border-info border-opacity-25"
+                             alt="Profile">
+                    </div>
+
+                    <h4 class="fw-bold mb-1 text-info">{{ current_user.nama }}</h4>
+                    <p class="small opacity-50 mb-3">{{ current_user.email }}</p>
+
+                    <hr class="opacity-10">
+
+                    <div class="nav flex-column nav-pills text-start"
+                         id="v-pills-tab"
+                         role="tablist">
+
+                        <button class="nav-link active mb-2"
+                                data-bs-toggle="pill"
+                                data-bs-target="#dashboard"
+                                type="button">
+                            Dashboard
+                        </button>
+
+                        <button class="nav-link mb-2"
+                                data-bs-toggle="pill"
+                                data-bs-target="#orders"
+                                type="button">
+                            pesanan saya
+                        </button>
+
+                        <button class="nav-link mb-2"
+                                data-bs-toggle="pill"
+                                data-bs-target="#notifications"
+                                type="button">
+                            Notifikasi
+                        </button>
+
+                        <a href="/logout"
+                           class="nav-link text-danger mt-3 py-3 border border-danger border-opacity-10 text-center rounded-3">
+                            <i class="bi bi-box-arrow-left me-2"></i> Keluar Akun
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONTENT -->
+            <div class="col-lg-8">
+                <div class="tab-content">
+
+                    <!-- DASHBOARD -->
+                    <div class="tab-pane fade show active"
+                         id="dashboard"
+                         role="tabpanel">
+
+                        <div class="account-card p-4 rounded-4 shadow-lg"
+                             style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1);">
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="fw-bold m-0">
+                                    <i class="bi bi-shield-check text-info me-2"></i>
+                                    Informasi Profil
+                                </h5>
+
+                                <button class="btn btn-sm btn-outline-info rounded-pill px-3"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalEditUser">
+                                    <i class="bi bi-pencil-square me-1"></i>
+                                    Edit Profil
+                                </button>
+                            </div>
+
+                            <div class="row g-4">
+
+                                <div class="col-md-6">
+                                    <label class="text-white-50 small text-uppercase fw-bold mb-1">
+                                        Nama Lengkap
+                                    </label>
+                                    <p class="fw-bold border-bottom border-white border-opacity-10 pb-2">
+                                        {{ current_user.nama }}
+                                    </p>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="text-white-50 small text-uppercase fw-bold mb-1">
+                                        Email Aktif
+                                    </label>
+                                    <p class="fw-bold border-bottom border-white border-opacity-10 pb-2">
+                                        {{ current_user.email }}
+                                    </p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="text-white-50 small text-uppercase fw-bold mb-1">
+                                        No. WhatsApp
+                                    </label>
+                                    <p class="fw-bold border-bottom border-white border-opacity-10 pb-2">
+                                        {{ current_user.no_hp or '-' }}
+                                    </p>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="text-white-50 small text-uppercase fw-bold mb-1">
+                                        Umur
+                                    </label>
+                                    <p class="fw-bold border-bottom border-white border-opacity-10 pb-2">
+                                        {{ current_user.umur or '-' }}
+                                        <span class="fw-normal text-muted">Tahun</span>
+                                    </p>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <label class="text-white-50 small text-uppercase fw-bold mb-1">
+                                        Alamat Pengiriman
+                                    </label>
+                                    <p class="fw-bold border-bottom border-white border-opacity-10 pb-2">
+                                        {{ current_user.alamat or 'Alamat belum diatur' }}
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ORDERS -->
+                    <div class="tab-pane fade"
+                         id="orders"
+                         role="tabpanel">
+
+                        <div class="content-card p-4 rounded-4"
+                             style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1);">
+
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h5 class="fw-bold m-0 text-info">
+                                    <i class="bi bi-bag-check me-2"></i>
+                                    Riwayat Belanja
+                                </h5>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-dark table-hover align-middle border-0">
+
+                                    <thead class="text-white-50 small uppercase"
+                                           style="background:rgba(255,255,255,0.02);">
+                                        <tr>
+                                            <th class="py-3 ps-4 border-0"
+                                                style="border-radius:10px 0 0 10px;">
+                                                ID
+                                            </th>
+                                            <th class="py-3 border-0">Produk</th>
+                                            <th class="py-3 border-0">Pembayaran</th>
+                                            <th class="py-3 border-0 text-center"
+                                                style="border-radius:0 10px 10px 0;">
+                                                Status
+                                            </th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody style="border-top:10px solid transparent;">
+                                        {% for order in orders %}
+                                        <tr style="border-bottom:1px solid rgba(255,255,255,0.05);">
+                                            <td class="ps-4 py-3 text-white-50">
+                                                #{{ order.id }}
+                                            </td>
+
+                                            <td>
+                                                <div class="fw-bold text-white">
+                                                    {{ order.produk.nama_laptop }}
+                                                </div>
+                                                <small class="text-info opacity-75 fw-medium"
+                                                       style="font-size:0.75rem;">
+                                                    <i class="bi bi-calendar3 me-1"></i>
+                                                    {{ order.created_at.strftime('%d %b %Y') }}
+                                                </small>
+                                            </td>
+
+                                            <td>
+                                                <div class="fw-bold text-success">
+                                                    Rp {{ "{:,.0f}".format(order.harga_saat_beli).replace(',', '.') }}
+                                                </div>
+                                                <small class="text-white-50 text-uppercase"
+                                                       style="font-size:0.7rem;">
+                                                    {{ order.bank_pilihan }}
+                                                </small>
+                                            </td>
+
+                                            <td class="text-center">
+                                                {% if order.status == 'pending' %}
+                                                <div class="py-2 rounded-3 text-warning border border-warning border-opacity-25 shadow-sm"
+                                                     style="background:rgba(255,193,7,0.12); font-size:0.75rem; min-width:110px; display:inline-block;">
+                                                    <i class="bi bi-clock-history me-1"></i> PENDING
+                                                </div>
+                                                {% elif order.status == 'confirmed' %}
+                                                <div class="py-2 rounded-3 text-success border border-success border-opacity-25 shadow-sm"
+                                                     style="background:rgba(25,135,84,0.15); font-size:0.75rem; min-width:110px; display:inline-block;">
+                                                    <i class="bi bi-check-circle-fill me-1"></i> BERHASIL
+                                                </div>
+                                                {% else %}
+                                                <div class="py-2 rounded-3 text-danger border border-danger border-opacity-25 shadow-sm"
+                                                     style="background:rgba(220,53,69,0.15); font-size:0.75rem; min-width:110px; display:inline-block;">
+                                                    <i class="bi bi-x-circle-fill me-1"></i> BATAL
+                                                </div>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% else %}
+                                        <tr>
+                                            <td colspan="4" class="text-center py-5">
+                                                <i class="bi bi-cart-x fs-1 d-block mb-3 opacity-25"></i>
+                                                <p class="text-white-50 m-0">
+                                                    Belum ada riwayat pesanan.
+                                                </p>
+                                                <a href="/"
+                                                   class="btn btn-sm btn-outline-info mt-3 rounded-pill px-4">
+                                                    Mulai Belanja
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTIFICATIONS -->
+                    <div class="tab-pane fade"
+                         id="notifications"
+                         role="tabpanel">
+
+                        <div class="row">
+                            <div class="col-12">
+
+                                <div class="account-card rounded-4 shadow-lg d-flex flex-column"
+                                     style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.1); height:calc(100vh - 150px); overflow:hidden;">
+
+                                    <div class="p-4 border-bottom"
+                                         style="border-color:rgba(255,255,255,0.08)!important;">
+                                        <h5 class="fw-bold m-0 text-info">
+                                            <i class="bi bi-chat-left-dots-fill me-2"></i>
+                                            Notifikasi Konsultasi
+                                        </h5>
+                                    </div>
+
+                                    <div class="notification-scroll p-3">
+                                        {% for n in notifications %}
+                                        <div class="notif-item mb-3 rounded-4 shadow-sm"
+                                             style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1);">
+
+                                            <div class="px-3 py-2 d-flex justify-content-between align-items-center"
+                                                 style="background:rgba(255,255,255,0.04);">
+
+                                                <span class="text-white-50 fw-bold"
+                                                      style="font-size:0.7rem;">
+                                                    #CONS-{{ n.id }}
+                                                </span>
+
+                                                {% if n.status == 'replied' %}
+                                                <span class="notif-status text-success"
+                                                      style="background:rgba(25,135,84,0.15);">
+                                                    DIBALAS
+                                                </span>
+                                                {% else %}
+                                                <span class="notif-status text-warning"
+                                                      style="background:rgba(255,193,7,0.15);">
+                                                    PENDING
+                                                </span>
+                                                {% endif %}
+                                            </div>
+
+                                            <div class="px-3 py-2">
+                                                <p class="text-white mb-1"
+                                                   style="font-size:0.85rem; line-height:1.4;">
+                                                    <strong class="text-info">
+                                                        {{ n.kategori_kebutuhan }}:
+                                                    </strong>
+                                                    {{ n.pesan_user }}
+                                                </p>
+
+                                                {% if n.balasan_admin %}
+                                                <div class="mt-2 px-2 py-2 rounded-3"
+                                                     style="background:rgba(64,224,208,0.08);">
+                                                    <small class="text-info fw-bold">Admin:</small>
+                                                    <p class="text-white mb-0"
+                                                       style="font-size:0.8rem; line-height:1.4;">
+                                                        {{ n.balasan_admin }}
+                                                    </p>
+                                                </div>
+                                                {% else %}
+                                                <small class="text-white-50 fst-italic"
+                                                       style="font-size:0.75rem;">
+                                                    Menunggu balasan admin...
+                                                </small>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        {% else %}
+                                        <div class="text-center py-5">
+                                            <i class="bi bi-chat-dots fs-1 d-block mb-3 opacity-25"></i>
+                                            <p class="text-white-50">Belum ada notifikasi.</p>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<div class="modal fade" id="modalEditUser" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-0 shadow-lg"
+             style="border-radius:20px;">
+
+            <div class="modal-header border-bottom border-white border-opacity-10">
+                <h5 class="modal-title fw-bold text-info">
+                    Lengkapi Profil Anda
+                </h5>
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="{{ url_for('user.update_profile') }}" method="POST">
+                <div class="modal-body p-4">
+
+                    <div class="mb-3">
+                        <label class="form-label small text-white-50">
+                            Nomor WhatsApp
+                        </label>
+                        <input type="text"
+                               name="no_hp"
+                               class="form-control bg-dark border-secondary text-white"
+                               value="{{ current_user.no_hp or '' }}"
+                               placeholder="0812...">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-white-50">Umur</label>
+                        <input type="number"
+                               name="umur"
+                               class="form-control bg-dark border-secondary text-white"
+                               value="{{ current_user.umur or '' }}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label small text-white-50">
+                            Alamat Lengkap
+                        </label>
+                        <textarea name="alamat"
+                                  class="form-control bg-dark border-secondary text-white"
+                                  rows="3">{{ current_user.alamat or '' }}</textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer border-top border-white border-opacity-10">
+                    <button type="submit"
+                            class="btn btn-info w-100 fw-bold py-2 rounded-3">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<style>
+.modal-backdrop { z-index: 1040 !important; }
+.modal { z-index: 1050 !important; }
+
+.nav-pills .nav-link {
+    color: rgba(255,255,255,0.6);
+    border-radius: 12px;
+    transition: 0.3s;
+}
+
+.nav-pills .nav-link:hover {
+    background: rgba(64,224,208,0.05);
+    color: #40e0d0;
+}
+
+.nav-pills .nav-link.active {
+    background: #40e0d0 !important;
+    color: #0b151a !important;
+    font-weight: bold;
+}
+
+.form-control:focus {
+    background-color: #0b151a;
+    border-color: #40e0d0;
+    box-shadow: none;
+    color: white;
+}
+</style>
+{% endblock %}

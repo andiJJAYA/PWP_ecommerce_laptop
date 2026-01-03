@@ -1,0 +1,492 @@
+{% extends "layout.html" %} {% block content %}
+
+<!-- ========== HOME ========== -->
+<section id="home" class="hero-section text-white">
+  <div class="container-fluid px-5">
+    <div class="row align-items-center h-100">
+      <div class="col-md-6 text-white hero-content">
+        <span class="hero-badge">Trusted Laptop Store</span>
+        <h1 class="hero-title">
+          Temukan Laptop Terbaik<br />untuk <span>Masa Depan Digitalmu</span>
+        </h1>
+        <p class="hero-desc">
+          Kami membantu Anda memilih laptop yang tepat — mulai dari kebutuhan
+          kuliah, kerja profesional, hingga bisnis. Produk original, bergaransi,
+          dan bisa konsultasi sebelum membeli.
+        </p>
+        <div class="hero-buttons mt-4">
+          <a href="#product" class="btn btn-primary btn-lg me-3 px-4">
+            Shop Now
+          </a>
+          <a href="#contact" class="btn btn-outline-light btn-lg px-4">
+            Consult First
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-6 d-flex justify-content-center align-items-center">
+        <div class="laptop-hero">
+          <div class="circle-bg"></div>
+          <img
+            src="{{ url_for('static', filename='img/laptop2.png') }}"
+            class="laptop laptop-left"/>
+          <img
+            src="{{ url_for('static', filename='img/laptop1.png') }}"
+            class="laptop laptop-top"/>
+          <img
+            src="{{ url_for('static', filename='img/laptop3.png') }}"
+            class="laptop laptop-right"/>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== PRODUCT ========== -->
+<section id="product" class="product-section">
+  <div class="product-header">
+    <h2>Pilihan Produk</h2>
+    <p>Temukan produk laptop yang paling cocok untuk kebutuhanmu</p>
+  </div>
+
+  <div class="product-row" id="productRow">
+    {% for p in products %}
+      <div class="product-card" id="product-{{ p.id }}">
+      <img
+        src="{{ url_for('static', filename='img/products/' + p.gambar) if p.gambar else url_for('static', filename='img/no-image.png') }}"
+        alt="{{ p.nama_laptop }}"/>
+      <div class="card-body">
+        <h5>{{ p.nama_laptop }}</h5>
+        <p>{{ p.spesifikasi_singkat }}</p>
+        <span class="price">Rp {{ "{:,.0f}".format(p.harga).replace(',', '.') }}</span>
+        <div class="card-action mt-3">
+          <button
+            class="buy-btn"
+            data-id="{{ p.id }}"
+            data-img="{{ url_for('static', filename='img/products/' + p.gambar) }}"
+            data-name="{{ p.nama_laptop }}"
+            data-spec="{{ p.spesifikasi_singkat }}"
+            data-price="{{ p.harga }}"
+          >Buy Now</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <div class="product-nav">
+    <i class="bi bi-arrow-left-square-fill" id="prevBtn"></i>
+    <i class="bi bi-arrow-right-square-fill" id="nextBtn"></i>
+  </div>
+</section>
+
+<!-- POPUP ORDER -->
+<div class="modal" id="orderModal">
+  <div class="modal-box order-layout">
+    <span class="close">&times;</span>
+
+    <!-- KIRI : FORM -->
+    <div class="order-left">
+      <h3>Detail Pesanan</h3>
+      <form id="orderForm">
+        <input type="hidden" name="produk_id" id="productIdInput" />
+        <input type="hidden" name="bank_pilihan" id="bankPilihanInput" />
+        <div class="mb-3">
+          <input
+            type="text"
+            name="nama_penerima"
+            class="form-control"
+            placeholder="Nama Penerima"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            type="tel"
+            name="no_hp"
+            class="form-control"
+            placeholder="Nomor WhatsApp"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            type="text"
+            name="alamat_lengkap"
+            class="form-control"
+            placeholder="Alamat (Kota/Kecamatan)"
+            required
+          />
+        </div>
+
+        <div class="payment-section">
+          <p class="payment-title">Pilih Bank</p>
+          <div class="bank-list">
+            <div class="bank-item" data-bank="BCA">
+              <img src="{{ url_for('static', filename='img/bca.png') }}" />
+              <span>BCA</span>
+            </div>
+            <div class="bank-item" data-bank="Mandiri">
+              <img src="{{ url_for('static', filename='img/mandiri.png') }}" />
+              <span>Mandiri</span>
+            </div>
+            <div class="bank-item" data-bank="BNI">
+              <img src="{{ url_for('static', filename='img/digibank.png') }}" />
+              <span>BNI</span>
+            </div>
+            <div class="bank-item" data-bank="BRI">
+              <img src="{{ url_for('static', filename='img/bri.png') }}" />
+              <span>BRI</span>
+            </div>
+            <div class="bank-item" data-bank="BTN">
+              <img src="{{ url_for('static', filename='img/btn.png') }}" />
+              <span>BTN</span>
+            </div>
+          </div>
+          <div class="payment-total" id="paymentTotal">
+            Total Pembayaran:
+            <strong>Rp <span id="finalPrice">0</span></strong>
+          </div>
+        </div>
+        <button type="submit" class="btn-primary-action">Pesan Sekarang</button>
+      </form>
+    </div>
+    <!-- KANAN : PRODUK -->
+    <div class="order-right">
+      <img id="orderImg" />
+      <h4 id="orderName"></h4>
+      <p id="orderSpec"></p>
+      <strong>Rp <span id="orderPrice"></span></strong>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP SUKSES -->
+<div class="modal" id="successModal">
+  <div class="modal-box success">
+    <i class="bi bi-check-circle-fill"></i>
+    <h3>Pesanan Berhasil</h3>
+    <p>Pesanan kamu sedang menunggu konfirmasi admin</p>
+    <button class="btn-success" onclick="closeSuccess()">Selesai</button>
+  </div>
+</div>
+
+<!-- ========== ABOUT ========== -->
+<section id="about">
+  <div class="container h-100 d-flex flex-column py-1">
+    <div class="row align-items-center mb-5 flex-grow-1">
+      <div class="col-lg-5 mb-4 mb-lg-0 text-center">
+        <div class="image-wrapper">
+          <img
+            src="{{ url_for('static', filename='img/toko_gambar.png') }}"
+            alt="Nexsus Laptop Store"
+            class="img-about"
+          />
+        </div>
+      </div>
+
+      <div class="col-lg-7 ps-lg-5 text-white">
+        <h2 class="section-title mb-3">
+          Tentang <span class="brand-name">Nexsus Laptop</span>
+        </h2>
+        <p class="section-desc mb-3">
+          Nexsus Laptop hadir sebagai platform e-commerce pilihan utama yang
+          menitikberatkan pada
+          <strong>kualitas, kepercayaan, dan edukasi</strong>. Kami menyediakan
+          layanan konsultasi gratis sebelum pembelian untuk memastikan Anda
+          mendapatkan perangkat yang tepat guna bagi produktivitas Anda.
+        </p>
+
+        <div class="contact-info mt-3 p-3 rounded-3 bg-white bg-opacity-10 border-start border-info border-4">
+          <h6 class="text-info fw-bold mb-1 small">📍 LOKASI STORE KAMI:</h6>
+          <p class="small mb-1">
+            Jl. Teknologi Utama No. 88, Kawasan Digital Sektor 7
+          </p>
+          <p class="small mb-0 opacity-75">
+            Jakarta Selatan, 12340 | Telp: (021) 888-999
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="awards-footer mt-4 pt-3 border-top border-white border-opacity-10">
+      <div class="slider">
+        <div class="slide-track">
+          <div class="slide">
+            <div class="badge">A+</div>
+            <span class="name">Trusted Shop</span>
+          </div>
+          <div class="slide">
+            <div class="badge">ISO</div>
+            <span class="name">ISO 9001</span>
+          </div>
+          <div class="slide">
+            <div class="badge">★</div>
+            <span class="name">Best Retailer</span>
+          </div>
+          <div class="slide">
+            <div class="badge silver">SNI</div>
+            <span class="name">Standar SNI</span>
+          </div>
+          <div class="slide">
+            <div class="badge">CE</div>
+            <span class="name">EU Safety</span>
+          </div>
+          <div class="slide">
+            <div class="badge silver">TOP</div>
+            <span class="name">Top Brand</span>
+          </div>
+          <div class="slide">
+            <div class="badge">🏆</div>
+            <span class="name">Innovation</span>
+          </div>
+          <div class="slide">
+            <div class="badge silver">ID</div>
+            <span class="name">Digital Star</span>
+          </div>
+          <div class="slide">
+            <div class="badge">🥇</div>
+            <span class="name">Excellence</span>
+          </div>
+          <div class="slide">
+            <div class="badge">A+</div>
+            <span class="name">Trusted Shop</span>
+          </div>
+          <div class="slide">
+            <div class="badge">ISO</div>
+            <span class="name">ISO 9001</span>
+          </div>
+          <div class="slide">
+            <div class="badge">★</div>
+            <span class="name">Best Retailer</span>
+          </div>
+          <div class="slide">
+            <div class="badge silver">SNI</div>
+            <span class="name">Standar SNI</span>
+          </div>
+          <div class="slide">
+            <div class="badge">CE</div>
+            <span class="name">EU Safety</span>
+          </div>
+          <div class="slide">
+            <div class="badge silver">TOP</div>
+            <span class="name">Top Brand</span>
+          </div>
+          <div class="slide">
+            <div class="badge">🏆</div>
+            <span class="name">Innovation</span>
+          </div>
+          <div class="slide">
+            <div class="badge silver">ID</div>
+            <span class="name">Digital Star</span>
+          </div>
+          <div class="slide">
+            <div class="badge">🥇</div>
+            <span class="name">Excellence</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== CONTACT ========== -->
+<section id="contact">
+  <div class="container h-100 d-flex flex-column justify-content-center">
+    <div class="row align-items-center">
+      <div class="col-lg-5 mb-5 mb-lg-0 text-white">
+        <h2 class="section-title mb-4">Butuh Konsultasi?</h2>
+        <p class="section-desc mb-4">
+          Bingung memilih laptop yang sesuai dengan budget dan kebutuhan kerja
+          Anda? Tim ahli kami siap membantu Anda menemukan perangkat terbaik.
+        </p>
+
+        <div class="contact-details">
+          <div class="d-flex align-items-center mb-3">
+            <div class="contact-icon-box me-3">📞</div>
+            <div>
+              <p class="small opacity-50 mb-0">Layanan Telepon</p>
+              <p class="fw-bold mb-0">(021) 888-999-123</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center mb-3">
+            <div class="contact-icon-box me-3">📧</div>
+            <div>
+              <p class="small opacity-50 mb-0">Email Bisnis</p>
+              <p class="fw-bold mb-0">support@nexsuslaptop.com</p>
+            </div>
+          </div>
+          <div class="d-flex align-items-center">
+            <div class="contact-icon-box me-3">💬</div>
+            <div>
+              <p class="small opacity-50 mb-0">WhatsApp Center</p>
+              <p class="fw-bold mb-0">+62 812-3456-7890</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-7 ps-lg-5">
+        <div class="consultation-card p-3 p-md-4 rounded-4 shadow-lg">
+          <h5 class="mb-3 fw-bold">Formulir Konsultasi</h5>
+          <form
+            id="consultForm"
+            action="{{ url_for('user.submit_consultation') }}"
+            method="POST"
+          >
+            <div class="row g-2">
+              <div class="col-md-6 mb-2">
+                <label class="form-label mini-label">Nama</label>
+                <input
+                  type="text"
+                  name="nama_user"
+                  class="form-control custom-input py-2"
+                  placeholder="Nama Anda"
+                  required
+                />
+              </div>
+              <div class="col-md-6 mb-2">
+                <label class="form-label mini-label">WhatsApp</label>
+                <input
+                  type="tel"
+                  name="wa_user"
+                  class="form-control custom-input py-2"
+                  placeholder="0812xxxx"
+                  required
+                />
+              </div>
+            </div>
+            <div class="mb-2">
+              <label class="form-label mini-label">Kebutuhan</label>
+              <select
+                name="kategori"
+                class="form-select custom-input py-2"
+                required
+              >
+                <option value="" disabled selected>Pilih Kebutuhan...</option>
+                <option value="Office / Administrasi">
+                  Office / Administrasi
+                </option>
+                <option value="Desain Grafis / Editing Video">
+                  Desain Grafis / Editing Video
+                </option>
+                <option value="Gaming Heavy">Gaming Heavy</option>
+                <option value="Coding / Programming">
+                  Coding / Programming
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label mini-label">Pesan</label>
+              <textarea
+                name="pesan"
+                class="form-control custom-input"
+                rows="2"
+                placeholder="Laptop impian Anda..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="btn-consult-blue">
+              Kirim Konsultasi
+            </button>
+          </form>
+          <div class="modal" id="successModal">
+            <div class="modal-box success">
+              <i class="bi bi-check-circle-fill"></i>
+              <h3>Pesanan Berhasil</h3>
+              <p>Pesanan kamu sedang menunggu konfirmasi admin</p>
+              <button class="btn-success" onclick="closeSuccess()">
+                Selesai
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ========== footer ========== -->
+<footer class="footer-section">
+  <div class="container">
+    <div class="row gy-4">
+      <div class="col-lg-4 col-md-6">
+        <img
+          src="{{ url_for('static', filename='img/brand_logo.png') }}"
+          alt="Nexus Laptop Logo"
+          class="footer-logo mb-3"
+          style="max-height: 50px"
+        />
+        <p class="footer-text">
+          Nexus Laptop adalah mitra teknologi terpercaya Anda. Kami berkomitmen
+          memberikan perangkat berkualitas tinggi dengan pelayanan purna jual
+          terbaik di kelasnya.
+        </p>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-title mb-3">LAYANAN KONTAK</h5>
+        <ul class="list-unstyled footer-contact-info">
+          <li class="mb-2">
+            <i class="fa-solid fa-envelope text-info me-2"></i>
+            <a href="mailto:support@nexsuslaptop.com"
+              >support@nexsuslaptop.com</a
+            >
+          </li>
+          <li class="mb-2">
+            <i class="fa-brands fa-whatsapp text-success me-2"></i>
+            <a href="https://wa.me/6281234567890">+62 812-3456-7890</a>
+          </li>
+          <li class="mb-2">
+            <i class="fa-solid fa-headset text-warning me-2"></i>
+            <span class="small">Layanan Konsultasi 24/7</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col-lg-2 col-md-6">
+        <h5 class="footer-title mb-3">IKUTI KAMI</h5>
+        <div class="social-grid">
+          <a href="#" class="social-link tiktok"
+            ><i class="fa-brands fa-tiktok"></i
+          ></a>
+          <a href="#" class="social-link instagram"
+            ><i class="fa-brands fa-instagram"></i
+          ></a>
+          <a href="#" class="social-link youtube"
+            ><i class="fa-brands fa-youtube"></i
+          ></a>
+          <a href="#" class="social-link twitter"
+            ><i class="fa-brands fa-x-twitter"></i
+          ></a>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-md-6">
+        <h5 class="footer-title mb-3">JAM OPERASIONAL</h5>
+        <div class="op-hours-card">
+          <div class="d-flex justify-content-between mb-2">
+            <span>Senin - Jumat</span>
+            <span class="text-info fw-bold">09.00 - 20.00</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Sabtu</span>
+            <span class="text-info fw-bold">10.00 - 17.00</span>
+          </div>
+          <div class="d-flex justify-content-between">
+            <span>Minggu</span>
+            <span class="text-danger fw-bold">Tutup</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="my-4 border-white opacity-10" />
+    <div class="text-center">
+      <p class="footer-copy mb-0">
+        &copy; 2025 <strong>Nexus Laptop</strong>. All Rights Reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
+{% endblock %}
