@@ -27,7 +27,6 @@
     });
   }
 
-  // Jalankan grafik saat halaman selesai dimuat
   window.addEventListener("load", function () {
     createMiniChart(
       "chartProduk",

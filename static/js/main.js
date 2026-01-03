@@ -123,14 +123,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const orderModal = document.getElementById("orderModal");
     const closeBtn = document.querySelector(".close");
 
-    // FUNGSI TUTUP MODAL
     if (closeBtn) {
         closeBtn.onclick = function() {
             orderModal.style.display = "none";
         }
     }
 
-    // TUTUP JIKA KLIK DI LUAR KOTAK MODAL (Overlay)
     window.onclick = function(event) {
         if (event.target == orderModal) {
             orderModal.style.display = "none";
@@ -151,10 +149,8 @@ function handleBuy(product) {
     document.getElementById("orderModal").style.display = "flex";
     document.getElementById("orderImg").src = product.img;
     document.getElementById("orderName").innerText = product.name;
-    document.getElementById("orderSpec").innerText = product.spec; // Munculkan spek singkat
+    document.getElementById("orderSpec").innerText = product.spec; 
     document.getElementById("orderPrice").innerText = "Rp " + Number(product.price).toLocaleString("id-ID");
-    
-    // Set ID produk ke input hidden
     document.getElementById("productIdInput").value = product.id;
     selectedPrice = product.price;
 }

@@ -45,7 +45,6 @@ input.addEventListener('keyup', async () => {
     resultBox.classList.remove('d-none');
 });
 
-// klik di luar → tutup
 document.addEventListener('click', e => {
     if (!input.contains(e.target)) {
         resultBox.classList.add('d-none');
@@ -60,10 +59,8 @@ document.addEventListener('click', function (e) {
 
     const id = item.dataset.id;
 
-    // 1. tutup dropdown
     resultBox.classList.add('d-none');
 
-    // 2. scroll ke produk
     const target = document.getElementById(`product-${id}`);
     if (target) {
         target.scrollIntoView({
@@ -77,7 +74,6 @@ document.addEventListener('click', function (e) {
         }, 2000);
     }
 
-    // 3. buka modal otomatis (delay biar scroll selesai)
     setTimeout(() => {
         handleBuy({
             id: item.dataset.id,
