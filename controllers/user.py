@@ -7,7 +7,6 @@ user_bp = Blueprint('user', __name__)
 
 @user_bp.route('/')
 def home():
-    # Mengambil produk yang aktif saja untuk ditampilkan di index.html
     products = Product.query.filter_by(status='aktif').all()
     return render_template('user/index.html', products=products)
 
@@ -35,7 +34,7 @@ def search():
 @login_required
 def akun():
     if current_user.role != 'user':
-        return redirect(url_for('user.home')) # Konsisten menggunakan blueprint
+        return redirect(url_for('user.home'))
     
     user_orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.id.desc()).all()
     notifications = Consultation.query.filter_by(user_id=current_user.id).all()
