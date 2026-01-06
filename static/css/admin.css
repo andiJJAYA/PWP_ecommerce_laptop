@@ -1,14 +1,14 @@
 body {
     overflow-x: hidden;
 }
-navbar {
+.navbar {
     background: #0b151a;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     height: 75px;
     z-index: 1030;
 }
 
-admin_dashbord {
+.admin_dashbord {
     background: #0f2027;
     min-height: 100vh;
     color: white;

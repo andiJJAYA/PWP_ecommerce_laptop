@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, flash
+from flask import Blueprint, render_template, request, redirect, flash, jsonify # Tambahkan jsonify
 from flask_login import login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -13,28 +13,44 @@ def login():
 
     if request.method == 'POST':
         submitted = True
-        email = request.form['email']
-        password = request.form['password']
+
+        if request.is_json:
+            data = request.get_json()
+            email = data.get('email')
+            password = data.get('password')
+        else:
+            email = request.form['email']
+            password = request.form['password']
 
         user = User.query.filter_by(email=email).first()
 
         if not user:
+            if request.is_json:
+                return jsonify({"status": "error", "message": "Akun belum terdaftar"}), 401
             flash('Akun belum terdaftar')
             return render_template('auth/login.html', submitted=submitted)
 
         if not check_password_hash(user.password_hash, password):
+            if request.is_json:
+                return jsonify({"status": "error", "message": "Password salah"}), 401
             flash('Password salah')
             return render_template('auth/login.html', submitted=submitted)
 
         login_user(user)
 
+        if request.is_json:
+            return jsonify({
+                "status": "success", 
+                "message": "Login successful",
+                "user": {"email": user.email, "role": user.role}
+            }), 200
+
+        # KHUSUS BROWSER: Lakukan redirect normal
         if user.role == 'admin':
             return redirect('/admin')
-
         return redirect('/')
 
     return render_template('auth/login.html', submitted=submitted)
-
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -49,7 +65,6 @@ def register():
         return redirect('/login')
 
     return render_template('auth/register.html')
-
 
 @auth_bp.route('/logout')
 def logout():

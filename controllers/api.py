@@ -109,3 +109,88 @@ def get_consultations_api():
         "user_id": c.user_id,
         "status": c.status
     } for c in consultations])
+
+# ENDPOINT UNTUK USER ==========
+@api_bp.route('/orders', methods=['POST'])
+@login_required
+def create_order_api():
+    """Endpoint bagi User untuk membuat pesanan baru"""
+    data = request.json
+    if not data or 'product_id' not in data:
+        return jsonify({"error": "Data produk tidak lengkap"}), 400
+    
+    product = Product.query.get_or_404(data.get('product_id'))
+    
+    new_order = Order(
+        user_id=current_user.id,
+        produk_id=product.id,
+        nama_penerima=data.get('nama_penerima'),
+        no_hp=data.get('no_hp'),
+        alamat_lengkap=data.get('alamat_lengkap'),
+        bank_pilihan=data.get('bank_pilihan'),
+        harga_saat_beli=product.harga,
+        status='pending'
+    )
+    
+    try:
+        db.session.add(new_order)
+        db.session.commit()
+        return jsonify({"status": "success", "message": "Pesanan berhasil dibuat", "order_id": new_order.id}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+@api_bp.route('/consultations', methods=['POST'])
+@login_required
+def create_consultation_api():
+    """Endpoint bagi User untuk mengirim pesan konsultasi"""
+    data = request.json
+    if not data or 'pesan_user' not in data:
+        return jsonify({"error": "Pesan tidak boleh kosong"}), 400
+
+    new_consul = Consultation(
+        user_id=current_user.id,
+        nama_wa=data.get('nama_wa', current_user.username),
+        kategori_kebutuhan=data.get('kategori', 'Umum'),
+        pesan_user=data.get('pesan_user'),
+        status='pending'
+    )
+    
+    db.session.add(new_consul)
+    db.session.commit()
+    return jsonify({"status": "success", "message": "Konsultasi terkirim", "id": new_consul.id}), 201
+
+# ENDPOINT TAMBAHAN UNTUK ADMIN ===============
+@api_bp.route('/consultations/<int:id>/reply', methods=['PATCH'])
+@login_required
+def reply_consultation_api(id):
+    """Endpoint bagi Admin untuk membalas konsultasi"""
+    if current_user.role != 'admin':
+        return jsonify({"error": "Forbidden"}), 403
+
+    consul = Consultation.query.get_or_404(id)
+    data = request.json
+    
+    if not data or 'balasan_admin' not in data:
+        return jsonify({"error": "Balasan tidak boleh kosong"}), 400
+
+    consul.balasan_admin = data.get('balasan_admin')
+    consul.status = 'replied'
+    db.session.commit()
+    return jsonify({"status": "success", "message": "Balasan terkirim"}), 200
+
+@api_bp.route('/consultations/<int:id>', methods=['DELETE'])
+@login_required
+def delete_consultation_api(id):
+    """Endpoint bagi Admin untuk menghapus konsultasi"""
+    if current_user.role != 'admin':
+        return jsonify({"error": "Forbidden"}), 403
+
+    consult = Consultation.query.get_or_404(id)
+    try:
+        db.session.delete(consult)
+        db.session.commit()
+        return jsonify({"status": "success", "message": "Konsultasi berhasil dihapus"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
