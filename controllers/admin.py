@@ -106,13 +106,23 @@ def edit_product(id):
 @admin_bp.route('/product/delete/<int:id>')
 @login_required
 def delete_product(id):
-    if current_user.role != 'admin': return redirect(url_for('user.home'))
+    if current_user.role != 'admin':
+        return redirect(url_for('user.home'))
     
     product = Product.query.get_or_404(id)
+
+    if product.orders:
+        flash(
+            'Produk tidak bisa dihapus karena sudah memiliki transaksi.',
+            'danger'
+        )
+        return redirect(url_for('admin.dashboard'))
+
     db.session.delete(product)
     db.session.commit()
-    flash('Produk berhasil dihapus!', 'danger')
+    flash('Produk berhasil dihapus!', 'success')
     return redirect(url_for('admin.dashboard'))
+
 
 @admin_bp.route('/order/update/<int:id>/<string:action>')
 @login_required

@@ -42,9 +42,9 @@ class Consultation(db.Model):
     __tablename__ = 'consultations'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
-    nama_wa = db.Column(db.String(50), nullable=False) # Sesuaikan dengan DB
+    nama_wa = db.Column(db.String(50), nullable=False)
     kategori_kebutuhan = db.Column(db.String(50), nullable=False)
-    pesan_user = db.Column(db.Text, nullable=False) # Sesuaikan dengan DB
+    pesan_user = db.Column(db.Text, nullable=False)
     balasan_admin = db.Column(db.Text)
     status = db.Column(db.Enum('pending', 'replied'), default='pending')
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())

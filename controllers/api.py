@@ -120,7 +120,6 @@ def create_order_api():
         return jsonify({"error": "Data produk tidak lengkap"}), 400
     
     product = Product.query.get_or_404(data.get('product_id'))
-    
     new_order = Order(
         user_id=current_user.id,
         produk_id=product.id,

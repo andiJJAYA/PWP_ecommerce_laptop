@@ -109,4 +109,3 @@ def submit_consultation():
     except Exception as e:
         db.session.rollback()
         return jsonify({'status': 'error', 'message': str(e)}), 500
-    

@@ -1,7 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, flash, jsonify # Tambahkan jsonify
+from flask import Blueprint, render_template, request, redirect, flash, jsonify 
 from flask_login import login_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from models import User
 from extensions import db
 
@@ -45,7 +44,6 @@ def login():
                 "user": {"email": user.email, "role": user.role}
             }), 200
 
-        # KHUSUS BROWSER: Lakukan redirect normal
         if user.role == 'admin':
             return redirect('/admin')
         return redirect('/')
